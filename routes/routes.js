@@ -1,25 +1,8 @@
 import express from 'express';
-import path from 'path';
-import multer from 'multer';
 import { isAdmin } from '../utils/authUtils.js';
-import fs from 'fs';
 
-const __dirname = process.cwd(); // Obtener el directorio base
 
 const router = express.Router();
-
-const diskStorage = multer.diskStorage({
-    destination: path.join(__dirname, '../public/images'), // Ajustar la ruta según la estructura de tu proyecto
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-jirestore-' + file.originalname);
-    }
-});
-
-
-const fileUpload = multer({
-    storage: diskStorage
-}).single('image');
-
 
 export default function setupRoutes(pool) {
     // Ruta para obtener todos los usuarios

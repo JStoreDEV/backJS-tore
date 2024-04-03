@@ -9,12 +9,13 @@ const app = express();
 
 // Configuración de la conexión a la base de datos
 const pool = new Pool({
-    user: 'fl0user',
-    host: 'ep-weathered-fire-19026024.us-east-2.aws.neon.fl0.io',
-    database:'prod-jire-store',
-    password: 'xbB0zMYWH6VK',
-    ssl: true
-});
+    user: process.env.USER,
+    host: process.env.HOST,
+    database: process.env.DATABASE,
+    password: process.env.PASSWORD,
+    port: process.env.PORT,
+    ssl: process.env.SSL
+    })
 
 
 // Manejo de errores en la conexión a la base de datos

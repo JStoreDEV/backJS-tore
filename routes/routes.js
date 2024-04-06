@@ -121,12 +121,39 @@ router.post('/producto', async (req, res) => {
     router.get('/categorias', async (req, res) => {
         try {
             const result = await pool.query('SELECT * FROM js_categoria');
-            res.json(result.rows); // Selecciona las filas del resultado y las envía como respuesta
+
+            const categoriaConImagenBase64 = result.rows.map(categoria => {
+                if (categoria.cat_image !== null && Buffer.isBuffer(categoria.cat_image)) {
+                    // Convertir el Buffer a base64
+                    const base64Image = categoria.cat_image.toString('base64');
+                    // Devolver el objeto con la imagen convertida a base64
+                    return {
+                        ...categoria,
+                        cat_image: base64Image
+                    };
+                } else if (categoria.cat_image === null) {
+                    // Si el campo 'cat_image' es null, proporcionar un valor predeterminado
+                    return {
+                        ...categoria,
+                        cat_image: '' // Proporciona un valor predeterminado o vacío
+                    };
+                } else {
+                    // Si el campo 'cat_image' no es un Buffer válido, proporcionar un valor predeterminado
+                    console.error('Error: El campo "cat_image" no es un Buffer válido:', categoria);
+                    return {
+                        ...categoria,
+                        cat_image: '' // Proporciona un valor predeterminado o vacío
+                    };
+                }
+            });
+
+            res.json(categoriaConImagenBase64); // Selecciona las filas del resultado y las envía como respuesta
         } catch (error) {
             console.error('Error al consultar la base de datos:', error);
             res.status(500).json({ error: 'Error al consultar la base de datos' });
         }
     });
+    
 
     return router;
 }
